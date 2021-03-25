@@ -1,5 +1,5 @@
 # quick-Status
- A Powercord plugin that lets you quickly update your status using aliases.
+ A Powercord plugin that lets you quickly update your status saved in a list using aliases.
 
 
 ### Description:
