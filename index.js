@@ -111,7 +111,7 @@ module.exports = class StatusToggle extends Plugin {
                 }
 			    return {
 				    commands: Object.keys(options)
-					    .filter((option) => option.toLowerCase().includes(args[0].toLowerCase()))
+					    .filter((option) => option.includes(args[0].toLowerCase()))
 					    .map((option) => ({
 						    command: option,
 						    description: options[option],
