@@ -36,7 +36,7 @@ module.exports = class StatusToggle extends Plugin {
                     let aliases =  AliasHandler.getAliases()
                     return {
     				    commands: Object.keys(aliases)
-    					    .filter((alias) => alias.includes(args[0].toLowerCase()))
+    					    .filter((alias) => alias.toLowerCase().includes(args[0].toLowerCase()))
     					    .map((alias) => ({
     						    command: alias,
     						    description: aliases[alias],
@@ -70,15 +70,15 @@ module.exports = class StatusToggle extends Plugin {
                         }
                         break
                     case 'del':
-                        let alias = AliasHandler.getAlias(args[1].toLowerCase())
+                        let alias = AliasHandler.getAlias(args[1])
                         if(alias===null)return {
                             send: false,
                             result: '```\nNot an alias.\n```'
                         }
-                        AliasHandler.deleteAlias(args[1].toLowerCase())
+                        AliasHandler.deleteAlias(args[1])
                         return {
                             send: false,
-                            result: 'Alias **'+args[1].toLowerCase()+'** deleted'
+                            result: 'Alias **'+args[1]+'** deleted'
                         }
                         break
                     case 'list':
@@ -111,7 +111,7 @@ module.exports = class StatusToggle extends Plugin {
                 }
 			    return {
 				    commands: Object.keys(options)
-					    .filter((option) => option.includes(args[0].toLowerCase()))
+					    .filter((option) => option.toLowerCase().includes(args[0].toLowerCase()))
 					    .map((option) => ({
 						    command: option,
 						    description: options[option],
