@@ -1,7 +1,7 @@
 {
     "name": "Quick Status",
     "description": "Allows you toggle a status saved in a list using aliases.",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "author": "D Brox",
     "license": "MIT"
 }
