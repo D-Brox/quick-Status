@@ -71,9 +71,9 @@ module.exports = class StatusToggle extends Plugin {
                         break
                     case 'del':
                         let alias = AliasHandler.getAlias(args[1])
-                        if(alias===null)return {
+                        if(!alias)return {
                             send: false,
-                            result: '```\nNot an alias.\n```'
+                            result: '**'+ args[1] + '** is not an alias.'
                         }
                         AliasHandler.deleteAlias(args[1])
                         return {
