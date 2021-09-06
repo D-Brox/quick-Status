@@ -2,7 +2,9 @@ const { Plugin } = require('powercord/entities')
 const { inject, uninject } = require('powercord/injector')
 const { React, getModule, contextMenu } = require('powercord/webpack')
 const AliasHandler = new (require('./AliasHandler.jsx'))()
+const AddStatus = require('./AddStatus')
 const { ContextMenu } = require('powercord/components');
+const { open } = require("powercord/modal");
 
 const settings = getModule([ 'updateRemoteSettings' ],false);
 
@@ -169,6 +171,12 @@ module.exports = class StatusToggle extends Plugin {
                         }
                     })
                 }
+
+                buttons.push({
+                    type: 'button',
+                    name: 'Add Status +',
+                    onClick: () => open(AddStatus)
+                })
 
                 let menu = React.createElement(ContextMenu, {
                     itemGroups: [ buttons ]
