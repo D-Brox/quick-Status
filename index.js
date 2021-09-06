@@ -1,7 +1,10 @@
 const { Plugin } = require('powercord/entities')
 const { inject, uninject } = require('powercord/injector')
-const { React, getModule, getModuleByDisplayName} = require('powercord/webpack')
+const { React, getModule, contextMenu } = require('powercord/webpack')
 const AliasHandler = new (require('./AliasHandler.jsx'))()
+const AddStatus = require('./AddStatus')
+const { ContextMenu } = require('powercord/components');
+const { open } = require("powercord/modal");
 
 const settings = getModule([ 'updateRemoteSettings' ],false);
 
@@ -120,10 +123,77 @@ module.exports = class StatusToggle extends Plugin {
 			    };
 		    }
         }) 
+
+        const CustomStatus = await getModule(m => m.default?.displayName === "CustomStatus");
+
+        inject("quick-status-context", CustomStatus, "default", (args, res) => {
+            res.props.onContextMenu = (args) => {
+                let aliases = AliasHandler.getAliases();
+
+                let buttons =  []
+
+                for (const key in aliases) {
+                    const status = aliases[key];
+
+                    buttons.push({
+                        type: 'button',
+                        name: status,
+                        onClick: () => {
+                            const prev = document.getElementsByClassName('customStatus-3tC2ig')[0].children[0].textContent
+
+                            settings.updateRemoteSettings({
+                                customStatus: { text : status }
+                            });
+                            powercord.api.notices.sendToast('status-changed', {
+                                header: "Changed Status",
+                                timeout: 5000,
+                                content: "New Status: " + status,
+                                buttons: [ 
+                                    {
+                                        text: 'Dismiss',
+                                        look: 'ghost',
+                                        size: 'small',
+                                        onClick: () => powercord.api.notices.closeToast('status-changed')
+                                    },
+                                    {
+                                        text: 'Undo',
+                                        look: 'ghost',
+                                        size: 'small',
+                                        onClick: () => {
+                                            settings.updateRemoteSettings({
+                                                customStatus: { text : prev }
+                                            });
+                                            powercord.api.notices.closeToast('status-changed');
+                                        }
+                                    }
+                                ]
+                            })
+                        }
+                    })
+                }
+
+                buttons.push({
+                    type: 'button',
+                    name: 'Add Status +',
+                    onClick: () => open(AddStatus)
+                })
+
+                let menu = React.createElement(ContextMenu, {
+                    itemGroups: [ buttons ]
+                });
+
+                contextMenu.openContextMenu(args, () => menu);
+            }
+
+            return res;
+        });
+
+        CustomStatus.default.displayName = "CustomStatus";
     }
     
     pluginWillUnload () {
         powercord.api.commands.unregisterCommand('Status')
         powercord.api.commands.unregisterCommand('Status.manage')
+        uninject("quick-status-context");
     }
 }
